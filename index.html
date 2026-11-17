@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#27352d"><meta name="description" content="Comandas personales COFI JAUS">
+<link rel="manifest" href="manifest.webmanifest">
+<title>COFI JAUS · Comandas</title>
+<style>
+:root{--bg:#f4f1e9;--paper:#fffdf8;--ink:#27352d;--muted:#77796f;--line:#e6e0d5;--accent:#b66e45;--soft:#e9e2d5}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:30px}
+header{background:var(--ink);color:#fff;padding:18px 16px 15px;position:sticky;top:0;z-index:5;box-shadow:0 2px 10px #0002}
+.head{max-width:900px;margin:auto;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:800;letter-spacing:2px;font-size:18px}.sub{font-size:11px;opacity:.7;letter-spacing:1.5px}
+main{max-width:900px;margin:0 auto;padding:14px;display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.82fr);gap:14px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 2px 8px #493b2510}
+h2{font-size:16px;margin:0 0 12px}.meta{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}.field input,.field textarea,.search{width:100%;border:1px solid var(--line);background:white;border-radius:10px;padding:11px;font:inherit;color:var(--ink);outline:none}.field textarea{min-height:70px;resize:vertical}
+.search{margin:0 0 10px}.cats{display:flex;gap:7px;overflow:auto;padding:2px 0 10px;scrollbar-width:thin}.cat{white-space:nowrap;border:1px solid var(--line);border-radius:999px;background:#fff;padding:8px 11px;font-size:12px;color:var(--ink)}.cat.active{background:var(--ink);color:white;border-color:var(--ink)}
+.item{display:flex;align-items:center;gap:8px;padding:11px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.item-info{flex:1;min-width:0}.item-name{font-weight:650;font-size:14px}.item-note{font-size:11px;color:var(--muted);margin-top:2px}.price{font-size:13px;color:var(--muted);white-space:nowrap}
+.add{border:0;background:var(--soft);color:var(--ink);border-radius:10px;width:36px;height:36px;font-size:22px;font-weight:500}
+.qty{display:flex;align-items:center;gap:9px}.qty button{width:30px;height:30px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font-size:18px}.qty span{min-width:12px;text-align:center;font-variant-numeric:tabular-nums}
+.order-line{padding:10px 0;border-bottom:1px solid var(--line)}.order-top{display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:650}.order-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:7px}.order-bottom input{min-width:0;flex:1;border:1px solid var(--line);border-radius:8px;padding:7px;font-size:12px;margin-right:8px}
+.total{display:flex;justify-content:space-between;font-size:20px;font-weight:800;padding:15px 0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btn{border:0;border-radius:11px;padding:12px;font-weight:700;font-size:13px;background:var(--ink);color:white}.btn.alt{background:var(--soft);color:var(--ink)}.btn.danger{background:#f4e5df;color:#8b3e2d}.empty{color:var(--muted);font-size:13px;padding:16px 0;text-align:center}
+.hint{font-size:11px;color:var(--muted);line-height:1.4;margin-top:10px}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#27352d;color:white;padding:10px 15px;border-radius:20px;font-size:13px;display:none;z-index:9}
+@media(max-width:700px){main{grid-template-columns:1fr;padding:10px}.order-panel{grid-row:1}.panel{padding:13px}.head{padding:0 2px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div><div class="brand">COFI JAUS</div><div class="sub">COMANDAS PERSONALES</div></div><div class="sub">VERSIÓN 1.0</div></div></header>
+<main>
+<section class="panel">
+<h2>Menú</h2>
+<input id="search" class="search" placeholder="Buscar producto..." autocomplete="off">
+<nav id="cats" class="cats"></nav>
+<div id="products"></div>
+</section>
+<section class="panel order-panel">
+<h2>Nueva comanda</h2>
+<div class="meta">
+<div class="field"><label for="table">Mesa</label><input id="table" placeholder="Ej. 8"></div>
+<div class="field"><label for="people">Personas</label><input id="people" type="number" min="1" placeholder="Ej. 2"></div>
+</div>
+<div class="field" style="margin-bottom:12px"><label for="general">Observaciones generales</label><textarea id="general" placeholder="Ej. sale junto, alergias, etc."></textarea></div>
+<div id="order"></div>
+<div class="total"><span>Total</span><span id="total">$0</span></div>
+<div class="actions">
+<button class="btn" id="share">Compartir comanda</button>
+<button class="btn alt" id="copy">Copiar texto</button>
+<button class="btn alt" id="new">Nueva comanda</button>
+<button class="btn danger" id="clear">Vaciar pedido</button>
+</div>
+<div class="hint">Los pedidos se guardan automáticamente en este teléfono. Para enviar a cocina, compartí el texto por el medio que use el local. Esta herramienta no se conecta con la caja.</div>
+</section>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const MENU = [["Cafés clásicos", [["Espresso", 4800, "1 shot"], ["Doble espresso", 5200, "2 shots"], ["Lungo", 5200, "1 shot"], ["Americano", 5700, "2 shots"], ["Cortado", 6100, "1 shot"], ["Doble espresso cortado", 6600, "2 shots"], ["Flat white", 7400, "2 shots"], ["Latte", 7200, "1 shot"], ["Capuccino", 7000, "1 shot"]]], ["Cafés especiales", [["Latte vainilla", 7500, "1 shot"], ["Mocha", 7500, "1 shot"], ["Toffee latte", 7500, "1 shot"], ["Chocolate caliente", 7400, ""], ["Leche de almendra (adicional)", 1600, "Adicional"]]], ["Métodos", [["Chemex / V60 / Aeropress", 11400, "Origen seleccionado"]]], ["Fríos", [["Cofi Tonic", 8900, ""], ["Cold Brew", 7300, ""]]], ["Tés", [["Té negro", 6700, ""], ["Té verde", 6700, ""], ["Té blend", 6700, ""], ["Té chai", 6700, ""]]], ["Bebidas", [["Gaseosa", 5900, ""], ["Agua mineral", 5400, ""]]], ["Frozen, licuados y jugos", [["Sunray Cofi", 8400, ""], ["Licuado banana", 8700, ""], ["Licuado frutilla", 8700, ""], ["Licuado proteico", 9900, ""], ["Tropicana", 8600, ""], ["Limonada", 7500, ""], ["Limonada de coco", 8200, ""], ["Pomelada", 6200, ""], ["Jugo exprimido", 8000, ""], ["Watermelon Sugar COFI", 6500, ""], ["Cold Brew de verano", 6500, ""]]], ["Con alcohol", [["Gin tonic", 8400, ""], ["Vermut", 8400, ""], ["Cerveza Grolsch", 6800, ""]]], ["Clásicos", [["Tostadas", 10900, ""], ["Pancakes proteicos", 16600, ""], ["Avocado toast Jaus", 20800, ""], ["Yogurt", 19700, ""], ["Huevos revueltos", 18200, ""], ["Omelette COFI", 19000, ""]]], ["Pastelería", [["Alfajor de limón", 7800, ""], ["Alfajor de almendras", 8800, ""], ["Alfajor bombón", 8100, ""], ["Pepa de pistachos", 8300, ""], ["Cookie pistacho y chocolate blanco", 10900, ""], ["Cookie chips de chocolate", 8300, ""], ["Cookie frutos rojos", 10900, ""], ["Muffin de banana", 8100, ""], ["Muffin de naranja", 8100, ""]]], ["Laminados", [["Medialuna", 4100, ""], ["Medialuna JyQ", 8100, ""], ["Mega chipá", 7800, "110 g"], ["Roll de canela", 8000, ""], ["Fosforito JyQ", 8000, ""], ["Lengüita con pastelera", 6900, ""]]], ["Tortas", [["Vasca de banana y dulce de leche", 12500, ""], ["Mousse de frutilla", 18200, ""], ["Cítrica de chocolate blanco", 18200, ""], ["Pavlova", 10400, ""]]], ["Sándwiches", [["Tostado cheddar, lomito y huevo", 15600, ""], ["Tostado clásico JyQ", 15000, ""], ["Sándwich caprese", 18200, ""], ["Sándwich de pollo", 21300, ""], ["Sándwich de chipá XL", 28000, ""], ["Sándwich de chipá", 23400, ""]]], ["Ensaladas", [["Caesar salad", 21800, ""], ["Jaus salad", 21800, ""], ["Pollo grillado salad", 21800, ""]]], ["Promociones", [["Promo tostado lomito, cheddar, huevo + café/jugo", 19700, "08:00 a 12:00"], ["Tostadas o 2 medialunas + café", 14500, "Todo el día"], ["Almuerzo: principal + bebida + café", 31400, "12:30 a 15:30"], ["Promo yogurt + juguito + café", 23500, ""], ["Promo pancake + juguito + café", 20000, ""], ["Mesa perfecta", 57200, "2 cafés + 2 bebidas frías + 1 clásico + 1 laminado + 1 team dulce"]]], ["Cuarto de café", [["Brasil (¼ kg)", 11400, ""], ["Bolivia (¼ kg)", 11400, ""], ["Colombia Honey (¼ kg)", 11400, ""]]]];
+const $=id=>document.getElementById(id);
+let category=MENU[0][0], cart=JSON.parse(localStorage.getItem('cofi-cart')||'{}');
+let meta=JSON.parse(localStorage.getItem('cofi-meta')||'{}');
+$('table').value=meta.table||'';$('people').value=meta.people||'';$('general').value=meta.general||'';
+const money=n=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(n);
+function save(){localStorage.setItem('cofi-cart',JSON.stringify(cart));localStorage.setItem('cofi-meta',JSON.stringify({table:$('table').value,people:$('people').value,general:$('general').value}));}
+function toast(t){$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',1800)}
+function renderCats(){ $('cats').innerHTML=MENU.map(([c])=>`<button class="cat ${c===category?'active':''}" data-cat="${c}">${c}</button>`).join('');}
+function renderProducts(){
+ const q=$('search').value.trim().toLocaleLowerCase('es');
+ let list=MENU.filter(([c])=>!q?c===category:true).flatMap(([c,items])=>items.map(([n,p,d])=>({c,n,p,d}))).filter(x=>!q||`${x.n} ${x.c} ${x.d}`.toLocaleLowerCase('es').includes(q));
+ $('products').innerHTML=list.length?list.map(x=>`<div class="item"><div class="item-info"><div class="item-name">${x.n}</div>${x.d?`<div class="item-note">${x.d}</div>`:''}</div><div class="price">${money(x.p)}</div><button class="add" data-add="${encodeURIComponent(x.n)}" aria-label="Agregar ${x.n}">+</button></div>`).join(''):'<div class="empty">No se encontraron productos.</div>';
+}
+function add(name){let found=MENU.flatMap(x=>x[1]).find(x=>x[0]===name);if(!cart[name])cart[name]={qty:0,price:found[1],note:''};cart[name].qty++;save();renderOrder();}
+function change(name,delta){if(!cart[name])return;cart[name].qty+=delta;if(cart[name].qty<=0)delete cart[name];save();renderOrder();}
+function renderOrder(){
+ let entries=Object.entries(cart);$('order').innerHTML=entries.length?entries.map(([n,x])=>`<div class="order-line"><div class="order-top"><span>${n}</span><span>${money(x.qty*x.price)}</span></div><div class="order-bottom"><input data-note="${encodeURIComponent(n)}" placeholder="Detalle / modificación" value="${(x.note||'').replaceAll('&','&amp;').replaceAll('"','&quot;')}"><div class="qty"><button data-minus="${encodeURIComponent(n)}">−</button><span>${x.qty}</span><button data-plus="${encodeURIComponent(n)}">+</button></div></div></div>`).join(''):'<div class="empty">Todavía no agregaste productos.</div>';
+ $('total').textContent=money(entries.reduce((s,[,x])=>s+x.qty*x.price,0));
+}
+function orderText(){
+ let lines=['COFI JAUS — COMANDA',`Mesa: ${$('table').value||'—'} | Personas: ${$('people').value||'—'}`,''];
+ Object.entries(cart).forEach(([n,x])=>lines.push(`${x.qty} x ${n} — ${money(x.qty*x.price)}${x.note?' | '+x.note:''}`));
+ lines.push('',`TOTAL: ${$('total').textContent}`);if($('general').value.trim())lines.push('Observaciones: '+$('general').value.trim());return lines.join('\n');
+}
+$('cats').addEventListener('click',e=>{let b=e.target.closest('[data-cat]');if(b){category=b.dataset.cat;renderCats();renderProducts()}});
+$('products').addEventListener('click',e=>{let b=e.target.closest('[data-add]');if(b)add(decodeURIComponent(b.dataset.add))});
+$('search').addEventListener('input',renderProducts);
+$('order').addEventListener('click',e=>{let b=e.target.closest('button');if(!b)return;let n=decodeURIComponent(b.dataset.plus||b.dataset.minus||'');if(b.dataset.plus)change(n,1);if(b.dataset.minus)change(n,-1)});
+$('order').addEventListener('input',e=>{let n=e.target.dataset.note;if(n){n=decodeURIComponent(n);if(cart[n]){cart[n].note=e.target.value;save()}}});
+['table','people','general'].forEach(id=>$(id).addEventListener('input',save));
+async function copy(){let t=orderText();try{await navigator.clipboard.writeText(t);toast('Comanda copiada')}catch(e){let a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();toast('Comanda copiada')}}
+$('copy').onclick=copy;
+$('share').onclick=async()=>{let t=orderText();if(navigator.share){try{await navigator.share({title:'Comanda COFI JAUS',text:t})}catch(e){}}else copy()};
+$('clear').onclick=()=>{if(confirm('¿Vaciar todos los productos de esta comanda?')){cart={};save();renderOrder()}};
+$('new').onclick=()=>{if(confirm('¿Empezar una comanda nueva? Se borrarán los datos de la comanda actual.')){cart={};$('table').value='';$('people').value='';$('general').value='';save();renderOrder();toast('Comanda nueva') }};
+renderCats();renderProducts();renderOrder();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>

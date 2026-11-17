@@ -1,0 +1,23 @@
+COFI JAUS — COMANDAS
+
+Archivos de una aplicación web progresiva (PWA).
+
+PUBLICAR GRATIS CON GITHUB PAGES
+1. Crear una cuenta en https://github.com si no tenés.
+2. Crear un repositorio nuevo, por ejemplo: cofi-comandas.
+3. Subir TODOS los archivos de esta carpeta a la raíz del repositorio.
+4. En Settings > Pages, en Build and deployment elegir Deploy from a branch.
+5. Elegir la rama main y la carpeta /(root), guardar.
+6. GitHub te va a dar una dirección del estilo https://TU-USUARIO.github.io/cofi-comandas/
+7. Abrir esa dirección desde Chrome en el Samsung A15. Menú ⋮ > Añadir a pantalla de inicio / Instalar.
+
+USO
+- Elegí una categoría y tocá + para agregar.
+- En la comanda podés cambiar cantidades y escribir detalles por producto.
+- Mesa, personas y observaciones generales se guardan automáticamente en ese teléfono.
+- Compartir comanda usa el menú de compartir de Android; Copiar texto copia el pedido.
+
+IMPORTANTE
+- La aplicación guarda los datos localmente en el navegador del teléfono. No sincroniza con otros dispositivos ni con la caja.
+- El funcionamiento sin conexión se activa después de abrirla al menos una vez con internet, una vez publicada por HTTPS.
+- Los precios se cargaron desde el menú PDF que compartiste. Verificá los importes con el menú vigente del local antes de usarla en servicio.
